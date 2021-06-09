@@ -1,8 +1,13 @@
 import { AppProps } from 'next/app'
 import React from 'react'
+import {SocketContext, socket} from 'context/socket';
 
-function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
+const App = ({ Component, pageProps }: AppProps) => {
+  return (
+      <SocketContext.Provider value={socket}>
+        <Component {...pageProps} />
+      </SocketContext.Provider>
+  )
 }
 
 export default App
