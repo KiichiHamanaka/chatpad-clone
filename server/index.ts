@@ -1,5 +1,6 @@
 import express from 'express'
 import { Server,Socket } from 'socket.io';
+import eventHandler from './services';
 
 const app: express.Express = express()
 
@@ -26,47 +27,16 @@ const io = new Server(server, {
 })
 
 io.on('connection', async (socket: Socket) => {
-    console.log(`Hello ${socket.id}`)
-    let roomsCount = 0
-    let roomSockets = await io.in(`room ${roomsCount}`).fetchSockets();
-    socket.on('JOIN_REQUEST', async () => {
-        console.log(`room ${roomsCount}は${roomSockets.length}人います`)
-        while(true){
-            if(roomSockets.length < 2){
-                socket.join(`room ${roomsCount}`)
-                roomSockets = await io.in(`room ${roomsCount}`)
-                    .fetchSockets();
-                console.log(`${socket.id} join to room ${roomsCount}`)
-                socket.to(socket.id).emit('MESSAGE',`room ${roomsCount}`)
-                if(roomSockets.length === 2){
-                    socket.to(`room ${roomsCount}`)
-                        .emit("MATCH_START",
-                        roomSockets.map((data)=>data.id))
-                    return
-                }
-            return
-            }else{
-                roomsCount++
-                roomSockets = await io.in(`room ${roomsCount}`).fetchSockets();
-                console.log(`${roomSockets.length} peoples in room ${roomsCount}`)
-            }
-        }
+    socket.on("JOIN_REQUEST",async () => {
+        await eventHandler(io,socket,"JOIN_REQUEST")
     })
-    socket.on('LEAVE_REQUEST', () => {
-        console.log(`${socket.id} leave room ${roomsCount}`)
-        roomsCount = 0
+    socket.on("LEAVE_REQUEST",async () => {
+        await eventHandler(io,socket,"LEAVE_REQUEST")
     })
-    socket.on('MESSAGE', (body) => {
-        socket.to(`room ${roomsCount}`).emit("MESSAGE",
-            {
-                body:body,
-                userid:socket.id
-            })
+    socket.on("MESSAGE",async () => {
+        await eventHandler(io,socket,"MESSAGE")
     })
-    socket.on('disconnect', () => {
-        socket.to(`room ${roomsCount}`).emit("MESSAGE",
-            {
-                userid:socket.id
-            })
+    socket.on("disconnect",async () => {
+        await eventHandler(io,socket,"disconnect")
     })
 })
