@@ -27,6 +27,8 @@ const io = new Server(server, {
 })
 
 io.on('connection', async (socket: Socket) => {
+    let activeUsers = await io.fetchSockets()
+    socket.emit('ACTIVE_USERS',activeUsers.length)
     socket.on("JOIN_REQUEST",async () => {
         await eventHandler(io,socket,"JOIN_REQUEST")
     })
