@@ -1,11 +1,12 @@
 import React from 'react'
-import StartMatchButton from "conponents/StartMatchButton"
+import InputArea from "conponents/InputArea";
+import ChatField from "../conponents/ChatField";
 
 const Home = () => {
   return (
       <div>
-        <h1>Hello World!</h1>
-          <StartMatchButton/>
+          <ChatField/>
+          <InputArea/>
       </div>
   )
 }

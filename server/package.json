@@ -14,10 +14,12 @@
   "dependencies": {
     "@types/socket.io": "^3.0.2",
     "express": "^4.17.1",
+    "prettier": "^2.3.1",
     "socket.io": "^4.1.2"
   },
   "scripts": {
     "start": "ts-node index.ts",
-    "ts-node-dev": "ts-node-dev --respawn index.ts"
+    "ts-node-dev": "ts-node-dev --respawn index.ts",
+    "format": "prettier --write \"/**/*.ts\" \"/**/*.tsx\""
   }
 }
