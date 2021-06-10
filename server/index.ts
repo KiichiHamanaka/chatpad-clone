@@ -34,24 +34,39 @@ io.on('connection', async (socket: Socket) => {
         while(true){
             if(roomSockets.length < 2){
                 socket.join(`room ${roomsCount}`)
-                roomSockets = await io.in(`room ${roomsCount}`).fetchSockets();
+                roomSockets = await io.in(`room ${roomsCount}`)
+                    .fetchSockets();
                 console.log(`${socket.id} join to room ${roomsCount}`)
                 socket.to(socket.id).emit('MESSAGE',`room ${roomsCount}`)
                 if(roomSockets.length === 2){
-                    io.to(`room ${roomsCount}`).emit("MATCH_START")
-                    console.log('マッチスタート')
+                    socket.to(`room ${roomsCount}`)
+                        .emit("MATCH_START",
+                        roomSockets.map((data)=>data.id))
                     return
                 }
             return
             }else{
                 roomsCount++
+                roomSockets = await io.in(`room ${roomsCount}`).fetchSockets();
                 console.log(`${roomSockets.length} peoples in room ${roomsCount}`)
             }
         }
     })
     socket.on('LEAVE_REQUEST', () => {
-        socket.leave(`room ${roomsCount}`)
         console.log(`${socket.id} leave room ${roomsCount}`)
         roomsCount = 0
+    })
+    socket.on('MESSAGE', (body) => {
+        socket.to(`room ${roomsCount}`).emit("MESSAGE",
+            {
+                body:body,
+                userid:socket.id
+            })
+    })
+    socket.on('disconnect', () => {
+        socket.to(`room ${roomsCount}`).emit("MESSAGE",
+            {
+                userid:socket.id
+            })
     })
 })
