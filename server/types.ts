@@ -8,6 +8,8 @@ export type UserType = {
     id: string
     name: string | null
     icon: string | null
+    profile: string | null
+    url: string | null
     isJoin: boolean
     isEnter: boolean
 }
