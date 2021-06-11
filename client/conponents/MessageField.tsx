@@ -23,7 +23,9 @@ const MessageField = () => {
     }else{
         return(
             <div>
-                <Message author={"message.author"} body={"messa"}/>
+                {messages.map((message,index) => (
+                    <Message key={index} author={message.author} body={message.body} />
+                ))}
             </div>
         )
     }
