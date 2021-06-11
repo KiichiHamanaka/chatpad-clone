@@ -1,7 +1,7 @@
 import React from 'react';
 import {MessageType} from "types";
 
-const LeftMessage = (props:MessageType) => {
+const Message = (props:MessageType) => {
     return(
         <div>
             {props.body}
@@ -9,4 +9,5 @@ const LeftMessage = (props:MessageType) => {
     )
 }
 
-export default LeftMessage
+export default Message
+

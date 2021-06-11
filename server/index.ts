@@ -35,8 +35,8 @@ io.on('connection', async (socket: Socket) => {
     socket.on("LEAVE_REQUEST",async () => {
         await eventHandler(io,socket,"LEAVE_REQUEST")
     })
-    socket.on("MESSAGE",async () => {
-        await eventHandler(io,socket,"MESSAGE")
+    socket.on("MESSAGE",async (data) => {
+        await eventHandler(io,socket,"MESSAGE",data)
     })
     socket.on("disconnect",async () => {
         await eventHandler(io,socket,"disconnect")

@@ -1,11 +1,11 @@
 import {Server, Socket} from "socket.io";
 
-const eventHandler = async (io:Server, socket:Socket, event:string) => {
+const eventHandler = async (io:Server, socket:Socket, event:string, data?:any) => {
     let roomsCount = 0
     let roomSockets = await io.in(`room ${roomsCount}`).fetchSockets();
     switch (event) {
         case "JOIN_REQUEST":
-            console.log(`room ${roomsCount}は${roomSockets.length}人います`)
+            console.log(`${roomSockets.length} peoples in room ${roomsCount}`)
             while(true){
                 if(roomSockets.length < 2){
                     socket.join(`room ${roomsCount}`)
@@ -14,9 +14,9 @@ const eventHandler = async (io:Server, socket:Socket, event:string) => {
                     console.log(`${socket.id} join to room ${roomsCount}`)
                     socket.to(socket.id).emit('MESSAGE',`room ${roomsCount}`)
                     if(roomSockets.length === 2){
+                        console.log('MATCHSTART')
                         socket.to(`room ${roomsCount}`)
-                            .emit("MATCH_START",
-                                roomSockets.map((data)=>data.id))
+                            .emit("MATCH_START", roomSockets.map((data)=>data.id))
                         return
                     }
                     return
@@ -32,11 +32,13 @@ const eventHandler = async (io:Server, socket:Socket, event:string) => {
             roomsCount = 0
             break;
         case "MESSAGE":
+            console.log(data)
             socket.to(`room ${roomsCount}`).emit("MESSAGE",
                 {
-                    body:'aaaa',
+                    body:data.body,
                     userid:socket.id
                 })
+            console.log('Send Message!')
             break;
         case "disconnect":
             socket.to(`room ${roomsCount}`).emit("MESSAGE",

@@ -1,6 +1,7 @@
 import React, {useState, useContext, useEffect} from 'react';
 import {SocketContext} from 'context/socket';
 import StartMatchButton from "conponents/StartMatchButton"
+import {MessageType} from "../types";
 
 const InputArea = () => {
     const socket = useContext(SocketContext);
@@ -8,14 +9,12 @@ const InputArea = () => {
 
     const handleChange = (event) => {
         setText(event.target.value)
+        if(text!=null)socket.emit('Entering now') //ユーザIDも送る？
+
     };
 
-    useEffect(() => {
-
-    }, []);
-
     const sendText = () => {
-        socket.emit('MESSAGE',text)
+        if(text!='')socket.emit('MESSAGE', {author: socket.id, body: text})
         setText('')
     }
 

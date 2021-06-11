@@ -1,5 +1,4 @@
 export type MessageType = {
-    roomID:string
     author:string
     body:string
 }
