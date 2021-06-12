@@ -26,7 +26,6 @@ const eventHandler = async (io:Server, socket:Socket, event:string, data?:any) =
                     console.log(`${roomSockets.length} peoples in room ${roomsCount}`)
                 }
             }
-            break;
         case "LEAVE_REQUEST":
             console.log(`${socket.id} leave room ${roomsCount}`)
             roomsCount = 0
