@@ -1,6 +1,6 @@
 import express from 'express'
 import { Server,Socket } from 'socket.io';
-import eventHandler from './services';
+import eventHandler from './eventHandler';
 
 const app: express.Express = express()
 
