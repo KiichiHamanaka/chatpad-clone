@@ -1,6 +1,6 @@
 import express from 'express'
 import { Server,Socket } from 'socket.io';
-import eventHandler, {eventHandle} from './eventHandler';
+import eventHandle from './eventHandler';
 
 const app: express.Express = express()
 
@@ -40,7 +40,7 @@ io.on('connection', async (socket: Socket) => {
         await handler.sendMessage(data)
     })
     socket.on("disconnect",async () => {
-        await eventHandler(io,socket,"disconnect")
+        await handler.disconnect()
     })
 })
 
