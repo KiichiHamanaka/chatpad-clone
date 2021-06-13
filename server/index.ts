@@ -1,6 +1,6 @@
 import express from 'express'
 import { Server,Socket } from 'socket.io';
-import eventHandler from './eventHandler';
+import eventHandler, {eventHandle} from './eventHandler';
 
 const app: express.Express = express()
 
@@ -28,17 +28,37 @@ const io = new Server(server, {
 
 io.on('connection', async (socket: Socket) => {
     let activeUsers = await io.fetchSockets()
+    const handler = new eventHandle(io,socket)
     socket.emit('ACTIVE_USERS',activeUsers.length)
     socket.on("JOIN_REQUEST",async () => {
-        await eventHandler(io,socket,"JOIN_REQUEST")
+        await handler.joinRequest()
     })
     socket.on("LEAVE_REQUEST",async () => {
-        await eventHandler(io,socket,"LEAVE_REQUEST")
+        await handler.leaveRequest()
     })
     socket.on("MESSAGE",async (data) => {
-        await eventHandler(io,socket,"MESSAGE",data)
+        await handler.sendMessage(data)
     })
     socket.on("disconnect",async () => {
         await eventHandler(io,socket,"disconnect")
     })
 })
+
+
+// io.on('connection', async (socket: Socket) => {
+//     let activeUsers = await io.fetchSockets()
+//     // let eventHandle = new EventHandler()
+//     socket.emit('ACTIVE_USERS',activeUsers.length)
+//     socket.on("JOIN_REQUEST",async () => {
+//         await eventHandler(io,socket,"JOIN_REQUEST")
+//     })
+//     socket.on("LEAVE_REQUEST",async () => {
+//         await eventHandler(io,socket,"LEAVE_REQUEST")
+//     })
+//     socket.on("MESSAGE",async (data) => {
+//         await eventHandler(io,socket,"MESSAGE",data)
+//     })
+//     socket.on("disconnect",async () => {
+//         await eventHandler(io,socket,"disconnect")
+//     })
+// })
