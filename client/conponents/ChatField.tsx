@@ -1,14 +1,19 @@
 import React from 'react';
 import ProfileArea from "./ProfileArea";
 import MessageField from "./MessageField";
+import styled from "styled-components";
+
+const Container = styled.div`
+  display: flex;
+`
 
 const ChatField = () => {
     return(
-        <div>
+        <Container>
             <ProfileArea/>
             <MessageField/>
             <ProfileArea/>
-        </div>
+        </Container>
     )
 }
 
