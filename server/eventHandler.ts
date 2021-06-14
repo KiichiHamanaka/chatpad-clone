@@ -26,7 +26,7 @@ class eventHandle  {
                 this.io.in(`room ${this.roomsCount}`).emit("MESSAGE",
                     {
                         body:'ChatPadシステムです (・Д・)\nチャット相手を探してるのでしばらく待ってね！',
-                        userid:'SYSTEM'
+                        author:'SYSTEM'
                     })
                 this.roomSockets = await this.io.in(`room ${this.roomsCount}`)
                     .fetchSockets();
@@ -50,7 +50,7 @@ class eventHandle  {
         this.io.in(`room ${this.roomsCount}`).emit("MESSAGE",
             {
                 body:'お疲れ～っす。ChatPadシステムです (・Д・)\nチャットを終了したよ！\n新しい相手とチャットするには\n新規チャットボタンをポチッとな～♪　 (・Д・)b\n',
-                userid:this.socket.id
+                author:'SYSTEM'
             })
         this.socket.leave(`room ${this.roomsCount}`)
         this.roomsCount = 0
@@ -60,7 +60,7 @@ class eventHandle  {
         this.io.in(`room ${this.roomsCount}`).emit("MESSAGE",
             {
                 body:data.body,
-                userid:this.socket.id
+                author:this.socket.id
             })
         console.log('Send Message!')
     }
@@ -75,7 +75,7 @@ class eventHandle  {
         this.io.in(`room ${this.roomsCount}`).emit("MESSAGE",
             {
                 body:'どもー。ChatPadシステムです (・Д・;)チャット相手がチャットを終了したよ！\n新しい相手とチャットするには\n新規チャットボタンをクリック、クリック～♪　 (・Д・)b',
-                userid:this.socket.id
+                author:'SYSTEM'
             })
         this.socket.leave(`room ${this.roomsCount}`)
         this.roomsCount = 0
