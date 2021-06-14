@@ -1,88 +1,95 @@
-import {Server, Socket} from "socket.io";
-import {MessageType, UserType} from "./types";
+import { Server, Socket } from "socket.io";
+import { MessageType, UserType } from "../types";
 
-class eventHandle  {
-    io: Server
-    socket: Socket
-    roomsCount: number
-    roomSockets?: any[]
-    me?:UserType
-    enemy?:UserType
-    // roomNoで管理するのを辞めたい
+class eventHandle {
+  io: Server;
+  socket: Socket;
+  roomsCount: number;
+  roomSockets?: any[];
+  me?: UserType;
+  enemy?: UserType;
+  // roomNoで管理するのを辞めたい
 
-    constructor(io: Server, socket: Socket) {
-        this.io = io
-        this.socket = socket
-        this.roomsCount = 0
-    }
+  constructor(io: Server, socket: Socket) {
+    this.io = io;
+    this.socket = socket;
+    this.roomsCount = 0;
+  }
 
-    async joinRequest(){
-        this.roomSockets = await this.io.in(`room ${this.roomsCount}`).fetchSockets();
-        console.log(this.roomSockets)
-        console.log(`${this.roomSockets.length} peoples in room ${this.roomsCount}`)
-        while(true){
-            if(this.roomSockets.length < 2){
-                this.socket.join(`room ${this.roomsCount}`)
-                this.io.in(`room ${this.roomsCount}`).emit("MESSAGE",
-                    {
-                        body:'ChatPadシステムです (・Д・)\nチャット相手を探してるのでしばらく待ってね！',
-                        author:'SYSTEM'
-                    })
-                this.roomSockets = await this.io.in(`room ${this.roomsCount}`)
-                    .fetchSockets();
-                console.log(`${this.socket.id} join to room ${this.roomsCount}`)
-                if(this.roomSockets.length === 2){
-                    console.log(`room ${this.roomsCount} is match!`)
-                    this.io.in(`room ${this.roomsCount}`)
-                        .emit("MATCH_START", this.roomSockets.map((data:any)=>data.id))
-                    return
-                }
-                return
-            }else{
-                this.roomsCount++
-                this.roomSockets = await this.io.in(`room ${this.roomsCount}`).fetchSockets();
-                console.log(`${this.roomSockets.length} peoples in room ${this.roomsCount}`)
-            }
+  async joinRequest() {
+    this.roomSockets = await this.io
+      .in(`room ${this.roomsCount}`)
+      .fetchSockets();
+    console.log(this.roomSockets);
+    console.log(
+      `${this.roomSockets.length} peoples in room ${this.roomsCount}`
+    );
+    while (true) {
+      if (this.roomSockets.length < 2) {
+        this.socket.join(`room ${this.roomsCount}`);
+        this.io.in(`room ${this.roomsCount}`).emit("MESSAGE", {
+          body: "ChatPadシステムです (・Д・)\nチャット相手を探してるのでしばらく待ってね！",
+          author: "SYSTEM",
+        });
+        this.roomSockets = await this.io
+          .in(`room ${this.roomsCount}`)
+          .fetchSockets();
+        console.log(`${this.socket.id} join to room ${this.roomsCount}`);
+        if (this.roomSockets.length === 2) {
+          console.log(`room ${this.roomsCount} is match!`);
+          this.io.in(`room ${this.roomsCount}`).emit(
+            "MATCH_START",
+            this.roomSockets.map((data: any) => data.id)
+          );
+          return;
         }
+        return;
+      } else {
+        this.roomsCount++;
+        this.roomSockets = await this.io
+          .in(`room ${this.roomsCount}`)
+          .fetchSockets();
+        console.log(
+          `${this.roomSockets.length} peoples in room ${this.roomsCount}`
+        );
+      }
     }
-    leaveRequest(){
-        console.log(`${this.socket.id} leave room ${this.roomsCount}`)
-        this.io.in(`room ${this.roomsCount}`).emit("MESSAGE",
-            {
-                body:'お疲れ～っす。ChatPadシステムです (・Д・)\nチャットを終了したよ！\n新しい相手とチャットするには\n新規チャットボタンをポチッとな～♪　 (・Д・)b\n',
-                author:'SYSTEM'
-            })
-        this.socket.leave(`room ${this.roomsCount}`)
-        this.roomsCount = 0
-    }
-    sendMessage(data:MessageType){
-        console.log(data)
-        this.io.in(`room ${this.roomsCount}`).emit("MESSAGE",
-            {
-                body:data.body,
-                author:this.socket.id
-            })
-        console.log('Send Message!')
-    }
-    updateUserInfo(userInfo:UserType){
-        this.me = userInfo
-    }
-    updateEnemyInfo(userInfo:UserType){
-        this.me = userInfo
-    }
-    disconnect(){
-        // isJoinを戻すようにemitする
-        this.io.in(`room ${this.roomsCount}`).emit("MESSAGE",
-            {
-                body:'どもー。ChatPadシステムです (・Д・;)チャット相手がチャットを終了したよ！\n新しい相手とチャットするには\n新規チャットボタンをクリック、クリック～♪　 (・Д・)b',
-                author:'SYSTEM'
-            })
-        this.socket.leave(`room ${this.roomsCount}`)
-        this.roomsCount = 0
-    }
+  }
+  leaveRequest() {
+    console.log(`${this.socket.id} leave room ${this.roomsCount}`);
+    this.io.in(`room ${this.roomsCount}`).emit("MESSAGE", {
+      body: "お疲れ～っす。ChatPadシステムです (・Д・)\nチャットを終了したよ！\n新しい相手とチャットするには\n新規チャットボタンをポチッとな～♪　 (・Д・)b\n",
+      author: "SYSTEM",
+    });
+    this.socket.leave(`room ${this.roomsCount}`);
+    this.roomsCount = 0;
+  }
+  sendMessage(data: MessageType) {
+    console.log(data);
+    this.io.in(`room ${this.roomsCount}`).emit("MESSAGE", {
+      body: data.body,
+      author: this.socket.id,
+    });
+    console.log("Send Message!");
+  }
+  updateUserInfo(userInfo: UserType) {
+    this.me = userInfo;
+  }
+  updateEnemyInfo(userInfo: UserType) {
+    this.me = userInfo;
+  }
+  disconnect() {
+    // isJoinを戻すようにemitする
+    this.io.in(`room ${this.roomsCount}`).emit("MESSAGE", {
+      body: "どもー。ChatPadシステムです (・Д・;)チャット相手がチャットを終了したよ！\n新しい相手とチャットするには\n新規チャットボタンをクリック、クリック～♪　 (・Д・)b",
+      author: "SYSTEM",
+    });
+    this.socket.leave(`room ${this.roomsCount}`);
+    this.roomsCount = 0;
+  }
 }
 
-export default eventHandle
+export default eventHandle;
 
 // const eventHandler = async (io:Server, socket:Socket, event:string, data?:any) => {
 //     let roomsCount = 0
