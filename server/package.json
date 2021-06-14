@@ -18,8 +18,8 @@
     "socket.io": "^4.1.2"
   },
   "scripts": {
-    "start": "ts-node index.ts",
-    "ts-node-dev": "ts-node-dev --respawn index.ts",
-    "format": "prettier --write \"/**/*.ts\" \"/**/*.tsx\""
+    "start": "ts-node src/index.ts",
+    "ts-node-dev": "ts-node-dev --respawn src/index.ts",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.tsx\""
   }
 }
