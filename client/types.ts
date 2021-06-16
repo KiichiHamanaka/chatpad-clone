@@ -1,6 +1,5 @@
 export type MessageTypes = {
-  callback?: Function;
-  author: string;
+  author: "SYSTEM" | string;
   body: string;
 };
 
