@@ -1,9 +1,9 @@
 import React from "react";
-import { MessageType } from "types";
+import { MessageTypes } from "types";
 import { socket } from "../context/socket";
 import styled from "styled-components";
 
-const MessageBox = styled.div`
+const System = styled.div`
   padding: 8px 16px;
   margin: 5px 5px;
   background-color: #ffe2c6;
@@ -28,9 +28,9 @@ const Enemy = styled.div`
   background-color: lightgrey;
 `;
 
-const Message = (props: MessageType) => {
+const Message = (props: MessageTypes) => {
   if (props.author === "SYSTEM") {
-    return <MessageBox>{props.body}</MessageBox>;
+    return <System>{props.body}</System>;
   } else if (props.author === socket.id) {
     //CSSで右に表示
     return <Me>{props.body}</Me>;
