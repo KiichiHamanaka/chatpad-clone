@@ -1,5 +1,6 @@
 export type MessageTypes = {
-  author: "SYSTEM" | string;
+  author?: string;
+  callBy?: "SYSTEM" | "ME" | "ENEMY" | "ERROR";
   body: string;
 };
 
