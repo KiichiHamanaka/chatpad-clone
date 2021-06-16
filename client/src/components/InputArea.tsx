@@ -1,21 +1,11 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { SocketContext } from "src/context/socket";
-import StartMatchButton from "src/components/StartMatchButton";
+import Button from "src/components/Button";
 import styled from "styled-components";
+import { userInfoContext } from "../context/userInfo";
 
 const Container = styled.div`
   display: flex;
-`;
-
-const Button = styled.button`
-  width: 150px;
-  border-radius: 5px;
-  color: #fff;
-  padding: 8px 16px;
-  font-size: 16px;
-  margin: 0 5px;
-  border: 1px solid lightgray;
-  background-color: lightcoral;
 `;
 
 const TextBox = styled.textarea`
@@ -35,6 +25,19 @@ const TextBox = styled.textarea`
 
 const InputArea = () => {
   const socket = useContext(SocketContext);
+  const userInfo = useContext(userInfoContext);
+  const [isJoin, setIsJoin] = useState(true);
+
+  useEffect(() => {
+    console.log(`${isJoin}`);
+    if (isJoin) {
+      console.log(userInfo);
+      socket.emit("JOIN_REQUEST", userInfo);
+    } else {
+      socket.emit("LEAVE_REQUEST");
+    }
+  }, [isJoin]);
+
   const [text, setText] = useState("");
 
   const handleChange = (event) => {
@@ -42,16 +45,20 @@ const InputArea = () => {
     if (text != null) socket.emit("Entering now"); //ユーザIDも送る？
   };
 
-  const sendText = () => {
-    if (text != "") socket.emit("MESSAGE", { author: socket.id, body: text }); //userのisJoinがtrueも条件に加える
+  const sendMessage = () => {
+    if (text != "") socket.emit("MESSAGE", { author: socket.id, body: text });
     setText("");
   };
 
   return (
     <Container>
-      <StartMatchButton />
+      <Button
+        onClick={() => setIsJoin(!isJoin)}
+        body={isJoin ? "チャット終了" : "新規チャット"}
+        state={"JOIN"}
+      />
       <TextBox value={text} onChange={handleChange} />
-      <Button onClick={sendText}>発言</Button>
+      <Button onClick={sendMessage} body={"発言"} state={"TALK"} />
     </Container>
   );
 };
