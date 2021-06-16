@@ -1,9 +1,9 @@
 import React from "react";
-import { MessageType } from "types";
-import { socket } from "../context/socket";
 import styled from "styled-components";
+import { MessageTypes } from "../../../types";
+import { socket } from "../context/socket";
 
-const MessageBox = styled.div`
+const System = styled.div`
   padding: 8px 16px;
   margin: 5px 5px;
   background-color: #ffe2c6;
@@ -28,15 +28,13 @@ const Enemy = styled.div`
   background-color: lightgrey;
 `;
 
-const Message = (props: MessageType) => {
-  if (props.author === "SYSTEM") {
-    return <MessageBox>{props.body}</MessageBox>;
-  } else if (props.author === socket.id) {
-    //CSSで右に表示
-    return <Me>{props.body}</Me>;
-  } else {
-    //CSSで左に表示
+const Message = (props: MessageTypes) => {
+  if (props.callBy === "SYSTEM") {
+    return <System>{props.body}</System>;
+  } else if (props.callBy === "ENEMY" || props.author !== socket.id) {
     return <Enemy>{props.body}</Enemy>;
+  } else {
+    return <Me>{props.body}</Me>;
   }
 };
 

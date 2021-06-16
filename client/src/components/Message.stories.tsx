@@ -5,10 +5,7 @@ export default {
   title: "Message",
 };
 
-export const showMessageBy = () => <Message author={"me"} body={"Hi!"} />;
-export const showMessageBySystem = () => (
-  <Message author={"SYSTEM"} body={"Hi!"} />
-);
-export const showMessageByEnemy = () => (
-  <Message author={"other"} body={"Hi!"} />
-);
+export const showMessageMe = () => <Message callBy="ME" body={"hi"} />;
+export const showMessageSystem = () => <Message callBy="SYSTEM" body={"hi"} />;
+export const showMessageEnemy = () => <Message callBy="ENEMY" body={"hi"} />;
+export const showMessageError = () => <Message body="hi" callBy={"ERROR"} />;

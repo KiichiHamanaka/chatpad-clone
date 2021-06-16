@@ -1,5 +1,6 @@
 import { Server, Socket } from "socket.io";
-import { MessageType, UserType } from "../types";
+import { UserType, MessageTypes } from "../../types";
+import { SystemMessages } from "../../SystemMessages";
 
 class eventHandle {
   io: Server;
@@ -28,8 +29,8 @@ class eventHandle {
       if (this.roomSockets.length < 2) {
         this.socket.join(`room ${this.roomsCount}`);
         this.io.in(`room ${this.roomsCount}`).emit("MESSAGE", {
-          body: "ChatPadシステムです (・Д・)\nチャット相手を探してるのでしばらく待ってね！",
-          author: "SYSTEM",
+          body: SystemMessages.Matching,
+          callBy: "SYSTEM",
         });
         this.roomSockets = await this.io
           .in(`room ${this.roomsCount}`)
@@ -58,13 +59,14 @@ class eventHandle {
   leaveRequest() {
     console.log(`${this.socket.id} leave room ${this.roomsCount}`);
     this.io.in(`room ${this.roomsCount}`).emit("MESSAGE", {
-      body: "お疲れ～っす。ChatPadシステムです (・Д・)\nチャットを終了したよ！\n新しい相手とチャットするには\n新規チャットボタンをポチッとな～♪　 (・Д・)b\n",
-      author: "SYSTEM",
+      body: SystemMessages.LeaveMatch,
+      state: "SYSTEM",
+      callBy: "SYSTEM",
     });
     this.socket.leave(`room ${this.roomsCount}`);
     this.roomsCount = 0;
   }
-  sendMessage(data: MessageType) {
+  sendMessage(data: MessageTypes) {
     console.log(data);
     this.io.in(`room ${this.roomsCount}`).emit("MESSAGE", {
       body: data.body,
@@ -81,8 +83,9 @@ class eventHandle {
   disconnect() {
     // isJoinを戻すようにemitする
     this.io.in(`room ${this.roomsCount}`).emit("MESSAGE", {
-      body: "どもー。ChatPadシステムです (・Д・;)チャット相手がチャットを終了したよ！\n新しい相手とチャットするには\n新規チャットボタンをクリック、クリック～♪　 (・Д・)b",
-      author: "SYSTEM",
+      body: SystemMessages.Disconnect,
+      state: "SYSTEM",
+      callBy: "SYSTEM",
     });
     this.socket.leave(`room ${this.roomsCount}`);
     this.roomsCount = 0;
@@ -90,79 +93,3 @@ class eventHandle {
 }
 
 export default eventHandle;
-
-// const eventHandler = async (io:Server, socket:Socket, event:string, data?:any) => {
-//     let roomsCount = 0
-//     let roomSockets = await io.in(`room ${roomsCount}`).fetchSockets();
-//
-//     switch (event) {
-//         case "JOIN_REQUEST":
-//             console.log(roomSockets) //配列じゃないとおかしい
-//             console.log(`${roomSockets.length} peoples in room ${roomsCount}`)
-//             while(true){
-//                 if(roomSockets.length < 2){
-//                     socket.join(`room ${roomsCount}`)
-//                     io.in(`room ${roomsCount}`).emit("MESSAGE",
-//                         {
-//                             body:'ChatPadシステムです (・Д・)\nチャット相手を探してるのでしばらく待ってね！',
-//                             userid:'SYSTEM'
-//                         })
-//                     roomSockets = await io.in(`room ${roomsCount}`)
-//                         .fetchSockets();
-//                     console.log(`${socket.id} join to room ${roomsCount}`)
-//                     if(roomSockets.length === 2){
-//                         console.log(`room ${roomsCount} is match!`)
-//                         io.in(`room ${roomsCount}`)
-//                             .emit("MATCH_START", roomSockets.map((data)=>data.id))
-//                         return
-//                     }
-//                     return
-//                 }else{
-//                     roomsCount++
-//                     roomSockets = await io.in(`room ${roomsCount}`).fetchSockets();
-//                     console.log(`${roomSockets.length} peoples in room ${roomsCount}`)
-//                 }
-//             }
-//         case "LEAVE_REQUEST":
-//             console.log(`${socket.id} leave room ${roomsCount}`)
-//             roomsCount = 0
-//             break;
-//         case "MESSAGE":
-//             console.log(data)
-//             io.in(`room ${roomsCount}`).emit("MESSAGE",
-//                 {
-//                     body:data.body,
-//                     userid:socket.id
-//                 })
-//             console.log('Send Message!')
-//             break;
-//         case "ENTERING":
-//             io.in(`room ${roomsCount}`).emit("MESSAGE",
-//                 {
-//                     userid:socket.id
-//                 })
-//             break;
-//         case "ENTERING_CANCEL":
-//             io.in(`room ${roomsCount}`).emit("MESSAGE",
-//                 {
-//                     userid:socket.id
-//                 })
-//             break;
-//         case "UPDATE_USERINFO":
-//             io.in(`room ${roomsCount}`).emit("MESSAGE",
-//                 {
-//                     userid:socket.id
-//                 })
-//             break;
-//         case "disconnect":
-//             io.in(`room ${roomsCount}`).emit("MESSAGE",
-//                 {
-//                     body:'どもー。ChatPadシステムです (・Д・;)チャット相手がチャットを終了したよ！\nもしチャットした相手が不快な人だったらここを押して教えてね。\n新しい相手とチャットするには\n新規チャットボタンをクリック、クリック～♪　 (・Д・)b',
-//                     userid:socket.id
-//                 })
-//             break;
-//         default:
-//             console.log("not exist request");
-//     }
-// }
-//
