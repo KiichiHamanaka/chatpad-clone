@@ -1,7 +1,7 @@
 import React from "react";
-import { MessageTypes } from "types";
-import { socket } from "../context/socket";
 import styled from "styled-components";
+import { MessageTypes } from "../../../types";
+import { socket } from "../context/socket";
 
 const System = styled.div`
   padding: 8px 16px;
@@ -29,14 +29,12 @@ const Enemy = styled.div`
 `;
 
 const Message = (props: MessageTypes) => {
-  if (props.author === "SYSTEM") {
+  if (props.callBy === "SYSTEM") {
     return <System>{props.body}</System>;
-  } else if (props.author === socket.id) {
-    //CSSで右に表示
-    return <Me>{props.body}</Me>;
-  } else {
-    //CSSで左に表示
+  } else if (props.callBy === "ENEMY" || props.author !== socket.id) {
     return <Enemy>{props.body}</Enemy>;
+  } else {
+    return <Me>{props.body}</Me>;
   }
 };
 
