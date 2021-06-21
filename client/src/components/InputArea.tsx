@@ -12,6 +12,7 @@ const TextBox = styled.textarea`
   width: 500px;
   height: 30px;
   border-radius: 5px;
+  margin: 0 5px;
   padding: 8px 16px;
   font-size: 16px;
   resize: none;
