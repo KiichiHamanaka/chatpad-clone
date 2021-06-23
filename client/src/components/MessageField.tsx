@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { SocketContext } from "../context/socket";
 import Message from "./Message";
 import styled from "styled-components";
-import { MessageTypes, UserType } from "../../../types";
-import { SystemMessages } from "../../../SystemMessages";
+import { MessageTypes, UserType } from "types";
+import { SystemMessages } from "SystemMessages";
 
 const MessageBox = styled.div`
   overflow: scroll;
