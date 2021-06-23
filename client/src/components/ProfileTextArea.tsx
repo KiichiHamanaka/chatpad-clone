@@ -1,8 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import ProfileIcon from "./ProfileIcon";
+
+type ProfileProps = {
+  body?: string;
+  URL?: string;
+  state?: "ME" | "ENEMY";
+};
 
 const Profile = styled.textarea`
-  width: 150px;
+  width: 140px;
   height: 300px;
   border-radius: 5px;
   font-size: 16px;
@@ -11,7 +18,7 @@ const Profile = styled.textarea`
 `;
 
 const URL = styled.textarea`
-  width: 150px;
+  width: 140px;
   height: 100px;
   border-radius: 5px;
   font-size: 16px;
@@ -19,9 +26,11 @@ const URL = styled.textarea`
   border: 1px solid lightgray;
 `;
 
-const ProfileTextArea = () => {
-  const [profile, setProfile] = useState("");
-  const [url, setUrl] = useState("");
+const ProfileTextArea = (props: ProfileProps) => {
+  const [profile, setProfile] = useState<null | string>(props.body);
+  const [url, setUrl] = useState<null | string>(props.URL);
+
+  //onBlurでsocketを発行する
 
   const handleChangeProfile = (event) => {
     setProfile(event.target.value);
@@ -37,6 +46,9 @@ const ProfileTextArea = () => {
       </div>
       <div>
         <URL value={url} onChange={handleChangeUrl} />
+      </div>
+      <div>
+        <ProfileIcon />
       </div>
     </div>
   );

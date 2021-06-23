@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
-import { UserType, MessageTypes } from "../../types";
-import { SystemMessages } from "../../SystemMessages";
+import { UserType, MessageTypes } from "types";
+import { SystemMessages } from "SystemMessages";
 
 class eventHandle {
   io: Server;

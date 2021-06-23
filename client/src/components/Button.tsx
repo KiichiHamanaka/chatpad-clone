@@ -8,9 +8,10 @@ type ButtonProps = {
 };
 
 const JoinButton = styled.button`
-  width: 156px;
+  width: 146px;
   border-radius: 5px;
   color: #fff;
+  margin: 5px 0;
   padding: 8px 16px;
   font-size: 16px;
   border: 1px solid lightgray;
@@ -18,8 +19,9 @@ const JoinButton = styled.button`
 `;
 
 const TalkButton = styled.button`
-  width: 156px;
+  width: 146px;
   border-radius: 5px;
+  margin: 5px 0;
   color: #fff;
   padding: 8px 16px;
   font-size: 16px;
