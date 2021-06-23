@@ -1,5 +1,5 @@
 import React from "react";
-import { UserType } from "../../../types";
+import { UserType } from "types";
 
 export let userInfo: UserType = {
   id: null,
