@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { MessageTypes } from "../../../types";
+import { MessageTypes } from "types";
 import { socket } from "../context/socket";
 
 const System = styled.div`
