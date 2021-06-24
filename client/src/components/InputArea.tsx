@@ -30,9 +30,7 @@ const InputArea = () => {
   const [isJoin, setIsJoin] = useState(true);
 
   useEffect(() => {
-    console.log(`${isJoin}`);
     if (isJoin) {
-      console.log(userInfo);
       socket.emit("JOIN_REQUEST", userInfo);
     } else {
       socket.emit("LEAVE_REQUEST");

@@ -39,13 +39,9 @@ const MessageField = () => {
     },
   ]);
   const [enemy, setEnemy] = useState<UserType>();
-  useEffect(() => {
-    console.log(messages);
-  }, [messages]);
+  useEffect(() => {}, [messages]);
 
   socket.on("MESSAGE", (data) => {
-    console.log(`get a message.`);
-    console.log(data);
     setMessages([...messages, data]);
   });
   socket.on("MATCH_START", (data) => {
@@ -53,8 +49,6 @@ const MessageField = () => {
       callBy: "SYSTEM",
       body: SystemMessages.StartMatch,
     };
-    console.log(`match!`);
-    console.log(data);
     setMessages([...messages, message]);
     setEnemy(data);
   });

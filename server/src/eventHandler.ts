@@ -21,43 +21,31 @@ class eventHandle {
     this.roomSockets = await this.io
       .in(`room ${this.roomsCount}`)
       .fetchSockets();
-    console.log(this.roomSockets);
-    console.log(
-      `${this.roomSockets.length} peoples in room ${this.roomsCount}`
-    );
-    while (true) {
-      if (this.roomSockets.length < 2) {
-        this.socket.join(`room ${this.roomsCount}`);
-        this.io.in(`room ${this.roomsCount}`).emit("MESSAGE", {
-          body: SystemMessages.Matching,
-          callBy: "SYSTEM",
-        });
-        this.roomSockets = await this.io
-          .in(`room ${this.roomsCount}`)
-          .fetchSockets();
-        console.log(`${this.socket.id} join to room ${this.roomsCount}`);
-        if (this.roomSockets.length === 2) {
-          console.log(`room ${this.roomsCount} is match!`);
-          this.io.in(`room ${this.roomsCount}`).emit(
-            "MATCH_START",
-            this.roomSockets.map((data: any) => data.id)
-          );
-          return;
-        }
-        return;
-      } else {
-        this.roomsCount++;
-        this.roomSockets = await this.io
-          .in(`room ${this.roomsCount}`)
-          .fetchSockets();
-        console.log(
-          `${this.roomSockets.length} peoples in room ${this.roomsCount}`
+    if (this.roomSockets.length < 2) {
+      this.socket.join(`room ${this.roomsCount}`);
+      this.io.in(`room ${this.roomsCount}`).emit("MESSAGE", {
+        body: SystemMessages.Matching,
+        callBy: "SYSTEM",
+      });
+      this.roomSockets = await this.io
+        .in(`room ${this.roomsCount}`)
+        .fetchSockets();
+      if (this.roomSockets.length === 2) {
+        this.io.in(`room ${this.roomsCount}`).emit(
+          "MATCH_START",
+          this.roomSockets.map((data: any) => data.id)
         );
+        return;
       }
+      return;
+    } else {
+      this.roomsCount++;
+      this.roomSockets = await this.io
+        .in(`room ${this.roomsCount}`)
+        .fetchSockets();
     }
   }
   leaveRequest() {
-    console.log(`${this.socket.id} leave room ${this.roomsCount}`);
     this.io.in(`room ${this.roomsCount}`).emit("MESSAGE", {
       body: SystemMessages.LeaveMatch,
       state: "SYSTEM",
@@ -67,12 +55,10 @@ class eventHandle {
     this.roomsCount = 0;
   }
   sendMessage(data: MessageTypes) {
-    console.log(data);
     this.io.in(`room ${this.roomsCount}`).emit("MESSAGE", {
       body: data.body,
       author: this.socket.id,
     });
-    console.log("Send Message!");
   }
   updateUserInfo(userInfo: UserType) {
     this.me = userInfo;
@@ -81,7 +67,6 @@ class eventHandle {
     this.me = userInfo;
   }
   disconnect() {
-    // isJoinを戻すようにemitする
     this.io.in(`room ${this.roomsCount}`).emit("MESSAGE", {
       body: SystemMessages.Disconnect,
       state: "SYSTEM",
